@@ -225,7 +225,7 @@ namespace LinqConsoleApp
         public void Przyklad3(){
             //var res = from emp in Emps
             //          select Emps.Min(emp=>emp.Salary);
-            var res = Emps.Min(emp => emp.Salary);
+            var res = Emps.Max(emp => emp.Salary);
             ResultsDataGridView.DataSource = res.ToList();
         }
 
@@ -233,11 +233,12 @@ namespace LinqConsoleApp
         /// SELECT * FROM Emps WHERE Salary=(SELECT MAX(Salary) FROM Emps);
         /// </summary>
         public void Przyklad4() {
-            var res = from emp in Emps
-                      let x = from emp2 in Emps select Emps.Min(emp3 => emp3.Salary)
-                      select emp;
+            //var res = from emp in Emps
+           //           let x = from emp2 in Emps select Emps.Min(emp3 => emp3.Salary)
+             //         select emp;
 
-            //var res2 = Emps.Select(emp=> Emps.Min(emp2=>emp2.Salary));
+            var max = Emps.Max(emp => emp.Salary);
+            var res = Emps.Where((emp, indx) => emp.Salary == max);
             ResultsDataGridView.DataSource = res.ToList();
         }
 
@@ -296,7 +297,7 @@ namespace LinqConsoleApp
         /// ORDER BY HireDate DESC;
         /// </summary>
         public void Przyklad9(){
-            var res = (from emp in Emps where emp.Job == "Frontend programmer" select emp).FirstOrDefault();
+            var res = (from emp in Emps where emp.Job == "Frontend programmer"  orderby emp.HireDate descending select emp).FirstOrDefault();
             ResultsDataGridView.DataSource = res.ToList();
         }
 
@@ -306,12 +307,14 @@ namespace LinqConsoleApp
         /// SELECT "Brak wartości", null, null;
         /// </summary>
         public void Przyklad10Button_Click(){
-            object[] a = {"Brak wartosci",null,null };
-
-            var r1 = Emps.Select(emp => new { emp.Ename, emp.Job, emp.HireDate });
-            var r2 = a.Select(o=>o);
-
-            var r = r1.Union(r2);
+            //object[] a = {"Brak wartosci",null,null };
+            //var r1 = Emps.Select(emp => new { emp.Ename, emp.Job, emp.HireDate });
+            //var r2 = a.Select(o=>o);
+            //var r = r1.Union(r2);
+            
+            var r = (from emp in Emps select new{emp.Ename,emp.Job, emp.HireDate}).Union(from emp in Emps
+                                  select new{Ename = "Brak wartosci",Job = (String)null,HireDate = (DateTime?)null});
+            
             ResultsDataGridView.DataSource = r.ToList();
         }
 
